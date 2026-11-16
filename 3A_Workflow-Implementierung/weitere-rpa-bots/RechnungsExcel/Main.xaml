@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>UiPath.DataTableUtilities</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Activities.Runtime.Collections</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>NPOI.Core</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.EventBasedAsync</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
+      <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
+      <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
+      <AssemblyReference>System.Private.Xml</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1196,2000" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Sequence DisplayName="Rechnungs-Excel-Bot" sap:VirtualizedContainerService.HintSize="600,1900" sap2010:WorkflowViewState.IdRef="Sequence_Bot">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="sd:DataTable" Name="dt_Uebergabe" />
+        <Variable x:TypeArguments="sd:DataTable" Name="dt_Rechnung" />
+        <Variable x:TypeArguments="x:Double" Default="0" Name="dblBetrag" />
+        <Variable x:TypeArguments="x:String" Default="[Path.Combine(Environment.CurrentDirectory, &quot;Uebergabe_Rechnung.xlsx&quot;)]" Name="strUebergabePath" />
+        <Variable x:TypeArguments="x:String" Default="[Environment.CurrentDirectory + &quot;\&quot;]" Name="strRechnungsOrdner" />
+        <Variable x:TypeArguments="x:String" Name="strRechnungsDatei" />
+        <Variable x:TypeArguments="x:String" Name="strDummy" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+
+      <!-- SCHRITT 1: Übergabedatei einlesen -->
+      <ui:ReadRange Range="{x:Null}" AddHeaders="True" DataTable="[dt_Uebergabe]" DisplayName="Read Range - Uebergabe_Rechnung.xlsx lesen" sap:VirtualizedContainerService.HintSize="500,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Uebergabe" WorkbookPath="[strUebergabePath]" />
+      <ui:LogMessage DisplayName="Log: Übergabedatei gelesen" sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Uebergabedatei geladen: &quot; + dt_Uebergabe.Rows.Count.ToString() + &quot; Auftraege gefunden.&quot;]" />
+
+      <!-- SCHRITT 2: Für jeden Auftrag eine Rechnung erstellen -->
+      <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="{x:Null}" DataTable="[dt_Uebergabe]" DisplayName="Fuer jeden Auftrag: Rechnung erstellen" sap:VirtualizedContainerService.HintSize="500,1200" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+        <ui:ForEachRow.Body>
+          <ActivityAction x:TypeArguments="sd:DataRow">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="sd:DataRow" Name="CurrentRow" />
+            </ActivityAction.Argument>
+            <TryCatch DisplayName="Try Catch - Rechnung erstellen" sap:VirtualizedContainerService.HintSize="490,1100" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+              <TryCatch.Try>
+                <Sequence DisplayName="Rechnung erstellen" sap2010:WorkflowViewState.IdRef="Sequence_Try">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+
+                  <ui:LogMessage DisplayName="Log: Auftrag wird verarbeitet" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="LogMessage_Auftrag" Level="Info" Message="[&quot;Erstelle Rechnung fuer Auftrag: &quot; + CurrentRow(&quot;auftragId&quot;).ToString + &quot; | &quot; + CurrentRow(&quot;firmenname&quot;).ToString]" />
+
+                  <!-- Rechnungsdatei-Pfad setzen -->
+                  <Assign DisplayName="Rechnungsdatei-Pfad setzen" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_Pfad">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strRechnungsDatei]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[strRechnungsOrdner + "Rechnung_" + CurrentRow("auftragId").ToString + ".xlsx"]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+
+                  <!-- Betrag berechnen -->
+                  <If Condition="[CurrentRow(&quot;vertragTyp&quot;).ToString.ToLower = &quot;jahresvertrag&quot;]" DisplayName="Vertragstyp pruefen" sap:VirtualizedContainerService.HintSize="460,180" sap2010:WorkflowViewState.IdRef="If_VertragTyp">
+                    <If.Then>
+                      <Assign DisplayName="Betrag: Jahresvertrag = 350 EUR/Monat" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_Jahresvertrag">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Double">[dblBetrag]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Double">[350.0]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </If.Then>
+                    <If.Else>
+                      <Assign DisplayName="Betrag: Einmalauftrag = Flaeche x Einheitspreis" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_Einmal">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Double">[dblBetrag]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Double">[CDbl(CurrentRow("behandelteFlaeche")) * CDbl(CurrentRow("einheitsPreis"))]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </If.Else>
+                  </If>
+
+                  <!-- Rechnungs-DataTable aufbauen (3x Assign) -->
+                  <Assign DisplayName="DataTable initialisieren" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_InitDT">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="sd:DataTable">[dt_Rechnung]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="sd:DataTable">[New System.Data.DataTable("Rechnung")]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign DisplayName="Spalte Feld hinzufuegen" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_ColFeld">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strDummy]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[dt_Rechnung.Columns.Add("Feld", GetType(System.String)).ColumnName]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign DisplayName="Spalte Wert hinzufuegen" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_ColWert">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[strDummy]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[dt_Rechnung.Columns.Add("Wert", GetType(System.String)).ColumnName]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+
+                  <!-- Rechnungskopf einfügen -->
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungskopf: Auftragsnummer" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_AuftragId">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Auftragsnummer", CurrentRow("auftragId").ToString}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungskopf: Kunde" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Kunde">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Kunde", CurrentRow("firmenname").ToString}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungskopf: Einsatztermin" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Termin">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Einsatztermin", CurrentRow("einsatztermin").ToString}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungsposition: Leistung" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Leistung">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Leistung", "Schaedlingsbekaempfung (" &amp; CurrentRow("vertragTyp").ToString &amp; ")"}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungsposition: Betrag EUR" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Betrag">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Betrag (EUR)", dblBetrag.ToString("F2")}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungsposition: Rechnungsdatum" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Datum">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Rechnungsdatum", DateTime.Now.ToString("dd.MM.yyyy")}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+                  <ui:AddDataRow DataTable="[dt_Rechnung]" DisplayName="Rechnungsposition: Status" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="AddRow_Status">
+                    <ui:AddDataRow.ArrayRow>
+                      <InArgument x:TypeArguments="s:Object[]">[New Object() {"Rechnungsstatus", "Erstellt"}]</InArgument>
+                    </ui:AddDataRow.ArrayRow>
+                  </ui:AddDataRow>
+
+                  <!-- Rechnung als Excel-Datei speichern -->
+                  <ui:WriteRange StartingCell="{x:Null}" DataTable="[dt_Rechnung]" DisplayName="Write Range - Rechnung als Excel speichern" sap:VirtualizedContainerService.HintSize="460,227" sap2010:WorkflowViewState.IdRef="WriteRange_Rechnung" SheetName="Rechnung" WorkbookPath="[strRechnungsDatei]" />
+                  <ui:LogMessage DisplayName="Log: Rechnung gespeichert" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="LogMessage_Saved" Level="Info" Message="[&quot;Rechnung gespeichert: &quot; + strRechnungsDatei + &quot; | Betrag: &quot; + dblBetrag.ToString(&quot;F2&quot;) + &quot; EUR&quot;]" />
+
+                  <!-- Status in Übergabedatei zurückschreiben -->
+                  <Assign DisplayName="Status: Erfolgreich" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_OK">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Object">[CurrentRow("Status")]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Object">["Erstellt"]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign DisplayName="Log: Dateiname eintragen" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_Log">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Object">[CurrentRow("Log")]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Object">["Rechnung_" + CurrentRow("auftragId").ToString + ".xlsx | " + dblBetrag.ToString("F2") + " EUR | " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                </Sequence>
+              </TryCatch.Try>
+              <TryCatch.Catches>
+                <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_1">
+                  <ActivityAction x:TypeArguments="s:Exception">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                    </ActivityAction.Argument>
+                    <Sequence DisplayName="Catch" sap2010:WorkflowViewState.IdRef="Sequence_Catch">
+                      <Assign DisplayName="Status: Fehler" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_Err">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[CurrentRow("Status")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Fehler"]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign DisplayName="Log: Fehlermeldung" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="Assign_ErrLog">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[CurrentRow("Log")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Fehler: " + exception.Message]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <ui:LogMessage DisplayName="Log: Fehler" sap:VirtualizedContainerService.HintSize="460,175" sap2010:WorkflowViewState.IdRef="LogMessage_Err" Level="Error" Message="[&quot;Fehler bei &quot; + CurrentRow(&quot;auftragId&quot;).ToString + &quot;: &quot; + exception.Message]" />
+                    </Sequence>
+                  </ActivityAction>
+                </Catch>
+              </TryCatch.Catches>
+            </TryCatch>
+          </ActivityAction>
+        </ui:ForEachRow.Body>
+      </ui:ForEachRow>
+
+      <!-- SCHRITT 3: Übergabedatei mit Status zurückschreiben -->
+      <ui:WriteRange StartingCell="{x:Null}" DataTable="[dt_Uebergabe]" DisplayName="Write Range - Status in Uebergabedatei speichern" sap:VirtualizedContainerService.HintSize="500,227" sap2010:WorkflowViewState.IdRef="WriteRange_Log" SheetName="Uebergabe" WorkbookPath="[strUebergabePath]" />
+      <ui:LogMessage DisplayName="Log: Bot abgeschlossen" sap:VirtualizedContainerService.HintSize="500,175" sap2010:WorkflowViewState.IdRef="LogMessage_End" Level="Info" Message="[&quot;Rechnungs-Excel-Bot: Alle Auftraege verarbeitet. Rechnungen in: &quot; + strRechnungsOrdner]" />
+    </Sequence>
+  </Sequence>
+</Activity>

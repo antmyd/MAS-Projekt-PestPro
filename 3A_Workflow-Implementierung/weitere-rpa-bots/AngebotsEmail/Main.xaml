@@ -1,0 +1,214 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data.Common" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:umae="clr-namespace:UiPath.Mail.Activities.Enums;assembly=UiPath.Mail.Activities" xmlns:usau="clr-namespace:UiPath.Shared.Activities.Utils;assembly=UiPath.Mail.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>UiPath.Mail</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>UiPath.Mail.Activities.Enums</x:String>
+      <x:String>UiPath.Shared.Activities.Utils</x:String>
+      <x:String>UiPath.Mail.Outlook.Activities</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>UiPath.Mail.Activities</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>System.Net.Mail</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.Memory.Data</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Data.SqlClient</AssemblyReference>
+      <AssemblyReference>NPOI.Core</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Linq.Async</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1202,3464" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Sequence DisplayName="Angebots-E-Mail-Bot" sap:VirtualizedContainerService.HintSize="524,3441" sap2010:WorkflowViewState.IdRef="Sequence_Bot">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="sd:DataTable" Name="dt_Angebote" />
+        <Variable x:TypeArguments="x:String" Default="[Path.Combine(Environment.CurrentDirectory, &quot;Uebergabe_Angebot.xlsx&quot;)]" Name="strUebergabePath" />
+        <Variable x:TypeArguments="x:String" Name="strEmailBody" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:ReadRange Range="{x:Null}" AddHeaders="True" DataTable="[dt_Angebote]" DisplayName="Read Range - Uebergabe_Angebot.xlsx lesen" sap:VirtualizedContainerService.HintSize="490,227" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Uebergabe" WorkbookPath="[strUebergabePath]" />
+      <ui:LogMessage DisplayName="Log: Übergabedatei gelesen" sap:VirtualizedContainerService.HintSize="490,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Uebergabedatei geladen: &quot; + dt_Angebote.Rows.Count.ToString() + &quot; Angebote gefunden.&quot;]" />
+      <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="{x:Null}" DataTable="[dt_Angebote]" DisplayName="Fuer jedes Angebot: E-Mail senden" sap:VirtualizedContainerService.HintSize="490,2511" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+        <ui:ForEachRow.Body>
+          <ActivityAction x:TypeArguments="sd:DataRow">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="sd:DataRow" Name="CurrentRow" />
+            </ActivityAction.Argument>
+            <TryCatch DisplayName="Try Catch - E-Mail senden" sap:VirtualizedContainerService.HintSize="488,2277" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+              <TryCatch.Try>
+                <Sequence DisplayName="E-Mail senden" sap:VirtualizedContainerService.HintSize="486,1508" sap2010:WorkflowViewState.IdRef="Sequence_Try">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If Condition="[CurrentRow(&quot;Status&quot;) Is DBNull.Value OrElse CurrentRow(&quot;Status&quot;).ToString &lt;&gt; &quot;Gesendet&quot;]" DisplayName="Pruefen: Noch nicht gesendet?" sap:VirtualizedContainerService.HintSize="452,1448" sap2010:WorkflowViewState.IdRef="If_NichtGesendet">
+                    <If.Then>
+                      <Sequence DisplayName="E-Mail erstellen und senden" sap:VirtualizedContainerService.HintSize="450,1153" sap2010:WorkflowViewState.IdRef="Sequence_Send">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:LogMessage DisplayName="Log: Angebot wird verarbeitet" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="LogMessage_Angebot" Level="Info" Message="[&quot;Sende Angebot an: &quot; + CurrentRow(&quot;kontaktEmail&quot;).ToString + &quot; (&quot; + CurrentRow(&quot;firmenname&quot;).ToString + &quot;)&quot;]" />
+                        <Assign DisplayName="E-Mail-Text aufbauen" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_Body">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[strEmailBody]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">["Sehr geehrte Damen und Herren," &amp; Environment.NewLine &amp; Environment.NewLine &amp; "vielen Dank fuer Ihre Anfrage. Anbei erhalten Sie unser Angebot fuer die professionelle Schaedlingsbekaempfung bei " &amp; CurrentRow("firmenname").ToString &amp; "." &amp; Environment.NewLine &amp; Environment.NewLine &amp; "Leistungsbeschreibung: " &amp; CurrentRow("angebotsBeschreibung").ToString &amp; Environment.NewLine &amp; "Angebotsbetrag: " &amp; CurrentRow("angebotsBetrag").ToString &amp; " EUR (zzgl. MwSt.)" &amp; Environment.NewLine &amp; "Angebot gueltig bis: " &amp; CurrentRow("angebotsGueltigBis").ToString &amp; Environment.NewLine &amp; "Auftragsnummer: " &amp; CurrentRow("auftragId").ToString &amp; Environment.NewLine &amp; Environment.NewLine &amp; "Bei Fragen stehen wir Ihnen gerne zur Verfuegung." &amp; Environment.NewLine &amp; Environment.NewLine &amp; "Mit freundlichen Gruessen" &amp; Environment.NewLine &amp; "PestPro GmbH" &amp; Environment.NewLine &amp; "Professionelle Schaedlingsbekaempfung fuer Gewerbe und Industrie"]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" UseRichTextEditor="{x:Null}" Body="[strEmailBody]" ConnectionMode="LegacyConfiguration" CreatedAfterSolutionSupport="False" DisplayName="E-Mail senden via Outlook (SendOutlookMail)" sap:VirtualizedContainerService.HintSize="416,227" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="[&quot;Angebot PestPro GmbH - &quot; + CurrentRow(&quot;firmenname&quot;).ToString + &quot; (Auftrag &quot; + CurrentRow(&quot;auftragId&quot;).ToString + &quot;)&quot;]" To="[CurrentRow(&quot;kontaktEmail&quot;).ToString]" UseISConnection="False">
+                          <ui:SendOutlookMail.ConnectionDetailsBackupSlot>
+                            <usau:BackupSlot x:TypeArguments="umae:ConnectionDetails" StoredValue="{x:Null}">
+                              <usau:BackupSlot.BackupValues>
+                                <scg:Dictionary x:TypeArguments="umae:ConnectionDetails, scg:List(x:Object)" />
+                              </usau:BackupSlot.BackupValues>
+                            </usau:BackupSlot>
+                          </ui:SendOutlookMail.ConnectionDetailsBackupSlot>
+                          <ui:SendOutlookMail.Files>
+                            <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
+                          </ui:SendOutlookMail.Files>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:SendOutlookMail>
+                        <Assign DisplayName="Status: Gesendet" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_OK">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Object">[CurrentRow("Status")]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Object">["Gesendet"]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <Assign DisplayName="Log: Zeitstempel" sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_Log">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Object">[CurrentRow("Log")]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Object">["Gesendet am " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + " an " + CurrentRow("kontaktEmail").ToString]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <ui:LogMessage DisplayName="Log: E-Mail erfolgreich gesendet" sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="LogMessage_OK" Level="Info" Message="[&quot;E-Mail gesendet an: &quot; + CurrentRow(&quot;kontaktEmail&quot;).ToString]" />
+                      </Sequence>
+                    </If.Then>
+                    <If.Else>
+                      <ui:LogMessage DisplayName="Log: Bereits gesendet - ueberspringen" sap:VirtualizedContainerService.HintSize="450,143" sap2010:WorkflowViewState.IdRef="LogMessage_Skip" Level="Info" Message="[&quot;Ueberspringe (bereits gesendet): &quot; + CurrentRow(&quot;firmenname&quot;).ToString]" />
+                    </If.Else>
+                  </If>
+                </Sequence>
+              </TryCatch.Try>
+              <TryCatch.Catches>
+                <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_1">
+                  <ActivityAction x:TypeArguments="s:Exception">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                    </ActivityAction.Argument>
+                    <Sequence DisplayName="Catch" sap:VirtualizedContainerService.HintSize="486,576" sap2010:WorkflowViewState.IdRef="Sequence_Catch">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Assign DisplayName="Status: Fehler" sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="Assign_Err">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[CurrentRow("Status")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Fehler"]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign DisplayName="Log: Fehlermeldung" sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="Assign_ErrLog">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Object">[CurrentRow("Log")]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Object">["Fehler: " + exception.Message]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <ui:LogMessage DisplayName="Log: Fehler" sap:VirtualizedContainerService.HintSize="452,166" sap2010:WorkflowViewState.IdRef="LogMessage_Err" Level="Error" Message="[&quot;Fehler bei &quot; + CurrentRow(&quot;firmenname&quot;).ToString + &quot;: &quot; + exception.Message]" />
+                    </Sequence>
+                  </ActivityAction>
+                </Catch>
+              </TryCatch.Catches>
+              <TryCatch.Finally>
+                <Sequence DisplayName="Endlich" sap:VirtualizedContainerService.HintSize="486,90" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Sequence>
+              </TryCatch.Finally>
+            </TryCatch>
+          </ActivityAction>
+        </ui:ForEachRow.Body>
+      </ui:ForEachRow>
+      <ui:WriteRange StartingCell="{x:Null}" DataTable="[dt_Angebote]" DisplayName="Write Range - Status in Uebergabedatei speichern" sap:VirtualizedContainerService.HintSize="490,279" sap2010:WorkflowViewState.IdRef="WriteRange_Log" SheetName="Uebergabe" WorkbookPath="[strUebergabePath]" />
+      <ui:LogMessage DisplayName="Log: Bot abgeschlossen" sap:VirtualizedContainerService.HintSize="490,166" sap2010:WorkflowViewState.IdRef="LogMessage_End" Level="Info" Message="[&quot;Angebots-E-Mail-Bot: Alle Angebote verarbeitet.&quot;]" />
+    </Sequence>
+  </Sequence>
+</Activity>

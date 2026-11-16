@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_P4_Recruiting_v2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.0">
+  <collaboration id="Collab_P4">
+    <participant id="Part_PestPro_P4" name="PestPro GmbH" processRef="P4_Recruiting" />
+    <participant id="Part_Bewerber_P4" name="Bewerber" />
+    <messageFlow id="MF_P4_Absage1ToBewerber" name="Absage (Vorfilter)" sourceRef="P4_T_Absage1" targetRef="Part_Bewerber_P4" />
+    <messageFlow id="MF_P4_Absage2ToBewerber" name="Absage (Erstgespräch)" sourceRef="P4_T_Absage2" targetRef="Part_Bewerber_P4" />
+    <messageFlow id="MF_P4_VertragsangebotToBewerber" name="Vertragsangebot" sourceRef="P4_T8" targetRef="Part_Bewerber_P4" />
+  </collaboration>
+  <process id="P4_Recruiting" name="Recruiting und Mitarbeitereinstellung" isExecutable="true" camunda:historyTimeToLive="P180D">
+    <laneSet id="LaneSet_P4">
+      <lane id="Lane_P4_Mentor" name="Mentor / Personalabteilung (Onboarding)">
+        <flowNodeRef>P4_End4</flowNodeRef>
+        <flowNodeRef>P4_SP_Onboarding</flowNodeRef>
+      </lane>
+      <lane id="Lane_P4_GF" name="Geschäftsführung">
+        <flowNodeRef>P4_T7</flowNodeRef>
+        <flowNodeRef>P4_GW3</flowNodeRef>
+        <flowNodeRef>P4_End3</flowNodeRef>
+      </lane>
+      <lane id="Lane_P4_Fachbereichsleitung" name="Fachbereichsleitung">
+        <flowNodeRef>P4_T5</flowNodeRef>
+      </lane>
+      <lane id="Lane_P4_Personalabteilung" name="Personalabteilung">
+        <flowNodeRef>P4_T6</flowNodeRef>
+        <flowNodeRef>P4_T8</flowNodeRef>
+        <flowNodeRef>P4_Start</flowNodeRef>
+        <flowNodeRef>P4_T1</flowNodeRef>
+        <flowNodeRef>P4_T2</flowNodeRef>
+        <flowNodeRef>P4_T3</flowNodeRef>
+        <flowNodeRef>P4_GW1</flowNodeRef>
+        <flowNodeRef>P4_T4</flowNodeRef>
+        <flowNodeRef>P4_T_Absage1</flowNodeRef>
+        <flowNodeRef>P4_End1</flowNodeRef>
+        <flowNodeRef>P4_GW2</flowNodeRef>
+        <flowNodeRef>P4_End2</flowNodeRef>
+        <flowNodeRef>P4_T_Absage2</flowNodeRef>
+        <flowNodeRef>P4_MCE_VertragErhalten</flowNodeRef>
+      </lane>
+    </laneSet>
+    <userTask id="P4_T6" name="Kandidaten bewerten und Entscheidung treffen" camunda:assignee="personalabteilung">
+      <documentation>Personalabteilung und Fachbereichsleitung bewerten den Kandidaten gemeinsam anhand einer Entscheidungsmatrix: fachliche Eignung, Erstgespräch-Ergebnis, Gehaltsvorstellung, Verfügbarkeit. Ausgabe: auswahlEntscheidung (ja/nein), begruendung.</documentation>
+      <incoming>P4_sf6</incoming>
+      <outgoing>P4_sf7</outgoing>
+    </userTask>
+    <serviceTask id="P4_T8" name="Vertragsangebot versenden" camunda:expression="${true}">
+      <documentation>Das System generiert automatisch ein Vertragsangebot auf Basis der vereinbarten Konditionen und versendet es per E-Mail an den Kandidaten. Frist zur Antwort: 1 Woche. Ausgabe: angebotVersendetAm, vertragsAngebotId.</documentation>
+      <incoming>P4_sf_ja3</incoming>
+      <outgoing>Flow_1be9o27</outgoing>
+    </serviceTask>
+    <startEvent id="P4_Start" name="Personalbedarf gemeldet">
+      <documentation>Startformular: Fachbereichsleitung meldet Personalbedarf. Erfasste Felder: stelle (Bezeichnung), anzahlStellen, mindestqualifikation, fuehrerscheinErforderlich, erfahrungJahre, einsatzort, wunschStartDatum, meldungDurch.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="stelle" label="Stellenbezeichnung" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="anzahlStellen" label="Anzahl Stellen" type="long">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="mindestqualifikation" label="Mindestqualifikation" type="enum">
+            <camunda:value id="ihk" name="IHK-Sachkundenachweis Schädlingsbekämpfung" />
+            <camunda:value id="ausbildung" name="Abgeschlossene Berufsausbildung" />
+            <camunda:value id="quereinsteiger" name="Quereinsteiger mit Schulungsbereitschaft" />
+          </camunda:formField>
+          <camunda:formField id="fuehrerscheinErforderlich" label="Führerschein Klasse B erforderlich?" type="boolean" />
+          <camunda:formField id="erfahrungJahre" label="Berufserfahrung (Min. Jahre)" type="long" />
+          <camunda:formField id="einsatzort" label="Primärer Einsatzort" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="wunschStartDatum" label="Gewünschter Starttermin" type="date" />
+          <camunda:formField id="meldungDurch" label="Gemeldet durch" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </extensionElements>
+      <outgoing>P4_sf1</outgoing>
+    </startEvent>
+    <userTask id="P4_T1" name="Stellenanzeige erstellen" camunda:assignee="personalabteilung">
+      <documentation>Die Personalabteilung erstellt auf Basis der Personalbedarfsmeldung eine vollständige Stellenanzeige: Aufgaben, Anforderungen (Pflicht / Wunsch), Leistungen, Konditionen. Interne Kommunikation erfolgt parallel. Ausgabe: stellenanzeigenText, veröffentlichungsDatum.</documentation>
+      <incoming>P4_sf1</incoming>
+      <outgoing>P4_sf2</outgoing>
+    </userTask>
+    <serviceTask id="P4_T2" name="Stelle auf Plattformen veröffentlichen" camunda:type="external" camunda:topic="stelle-veroeffentlichen">
+      <documentation>Das System veröffentlicht die Stellenanzeige automatisch auf relevanten Jobportalen (z.B. StepStone, Indeed, LinkedIn) und stellt sie gleichzeitig intern im Intranet zur Verfügung. REST-Anbindung an Jobportal-APIs. Ausgabe: anzeigenIds (pro Plattform), veröffentlichtAm.</documentation>
+      <incoming>P4_sf2</incoming>
+      <outgoing>P4_sf3</outgoing>
+    </serviceTask>
+    <userTask id="P4_T3" name="Bewerbungen sichten und vorfiltern" camunda:assignee="personalabteilung">
+      <documentation>Die Personalabteilung sichtet eingehende Bewerbungen und prüft sie gegen die Mindestanforderungen: IHK-Sachkundenachweis vorhanden?, Führerschein (falls gefordert)?, Mindestberufserfahrung erfüllt?. Ausgabe: kandidatenListe (geeignet/ungeeignet), anzahlGeeignet.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="mindestanforderungenErfuellt" label="Mindestanforderungen erfüllt?" type="boolean" />
+        </camunda:formData>
+      </extensionElements>
+      <incoming>P4_sf3</incoming>
+      <outgoing>P4_sf4</outgoing>
+    </userTask>
+    <exclusiveGateway id="P4_GW1" name="Mindestanforderungen erfüllt?">
+      <incoming>P4_sf4</incoming>
+      <outgoing>P4_sf_nein1</outgoing>
+      <outgoing>P4_sf_ja1</outgoing>
+    </exclusiveGateway>
+    <userTask id="P4_T4" name="Erstgespräch durchführen" camunda:assignee="personalabteilung">
+      <documentation>Die Personalabteilung führt ein telefonisches oder Video-Erstgespräch (Dauer: ca. 30 Min.) durch. Abfrage: Motivation, Verfügbarkeit, Gehaltsvorstellung, erste fachliche Eindrücke. Zeitrahmen: innerhalb 2 Wochen nach Bewerbungseingang. Ausgabe: erstgespraechErgebnis (bestanden/nicht bestanden), notizen.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="erstgespraechBestanden" label="Erstgespräch bestanden?" type="boolean" />
+        </camunda:formData>
+      </extensionElements>
+      <incoming>P4_sf_ja1</incoming>
+      <outgoing>P4_sf5</outgoing>
+    </userTask>
+    <serviceTask id="P4_T_Absage1" name="Absage an Bewerber versenden" camunda:expression="${true}">
+      <documentation>Das System versendet automatisch eine freundliche Absage-E-Mail an alle nicht geeigneten Bewerber mit standardisiertem Text und optionaler Begründung. Ausgabe: absageVersendetAm.</documentation>
+      <incoming>P4_sf_nein1</incoming>
+      <outgoing>P4_sf_end1</outgoing>
+    </serviceTask>
+    <endEvent id="P4_End1" name="Bewerber abgesagt">
+      <incoming>P4_sf_end1</incoming>
+    </endEvent>
+    <exclusiveGateway id="P4_GW2" name="Erstgespräch bestanden?">
+      <incoming>P4_sf5</incoming>
+      <outgoing>P4_sf_nein2</outgoing>
+      <outgoing>P4_sf_ja2</outgoing>
+    </exclusiveGateway>
+    <endEvent id="P4_End2" name="Bewerber abgesagt">
+      <incoming>P4_sf_end2</incoming>
+    </endEvent>
+    <serviceTask id="P4_T_Absage2" name="Absage nach Erstgespräch versenden" camunda:expression="${true}">
+      <documentation>Das System versendet eine Absage-E-Mail nach dem Erstgespräch mit individuell angepasstem Text (falls notizen vorhanden). Ausgabe: absageVersendetAm.</documentation>
+      <incoming>P4_sf_nein2</incoming>
+      <outgoing>P4_sf_end2</outgoing>
+    </serviceTask>
+    <userTask id="P4_T5" name="Persönliches Gespräch mit Fachbereichsleitung" camunda:assignee="fachbereichsleitung">
+      <documentation>Die Fachbereichsleitung führt ein persönliches Vorstellungsgespräch durch (Dauer: ca. 60 Min.). Schwerpunkte: fachliche Kompetenz, praktische Erfahrungen, Teamfähigkeit, Umgang mit Gefahrensituationen. Ausgabe: fachgespraechErgebnis, fachlicheEinschaetzung.</documentation>
+      <incoming>P4_sf_ja2</incoming>
+      <outgoing>P4_sf6</outgoing>
+    </userTask>
+    <sequenceFlow id="P4_sf6" sourceRef="P4_T5" targetRef="P4_T6" />
+    <sequenceFlow id="P4_sf7" sourceRef="P4_T6" targetRef="P4_T7" />
+    <sequenceFlow id="P4_sf8" sourceRef="P4_T7" targetRef="P4_GW3" />
+    <sequenceFlow id="P4_sf_nein3" name="Nein (nicht genehmigt)" sourceRef="P4_GW3" targetRef="P4_End3">
+      <conditionExpression xsi:type="tFormalExpression">${gfFreigabe == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf_ja3" name="Ja (genehmigt)" sourceRef="P4_GW3" targetRef="P4_T8">
+      <conditionExpression xsi:type="tFormalExpression">${gfFreigabe == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf1" sourceRef="P4_Start" targetRef="P4_T1" />
+    <sequenceFlow id="P4_sf2" sourceRef="P4_T1" targetRef="P4_T2" />
+    <sequenceFlow id="P4_sf3" sourceRef="P4_T2" targetRef="P4_T3" />
+    <sequenceFlow id="P4_sf4" sourceRef="P4_T3" targetRef="P4_GW1" />
+    <sequenceFlow id="P4_sf_nein1" name="Nein (ungeeignet)" sourceRef="P4_GW1" targetRef="P4_T_Absage1">
+      <conditionExpression xsi:type="tFormalExpression">${mindestanforderungenErfuellt == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf_ja1" name="Ja (geeignet)" sourceRef="P4_GW1" targetRef="P4_T4">
+      <conditionExpression xsi:type="tFormalExpression">${mindestanforderungenErfuellt == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf5" sourceRef="P4_T4" targetRef="P4_GW2" />
+    <sequenceFlow id="P4_sf_end1" sourceRef="P4_T_Absage1" targetRef="P4_End1" />
+    <sequenceFlow id="P4_sf_nein2" name="Nein (nicht bestanden)" sourceRef="P4_GW2" targetRef="P4_T_Absage2">
+      <conditionExpression xsi:type="tFormalExpression">${erstgespraechBestanden == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf_ja2" name="Ja (bestanden)" sourceRef="P4_GW2" targetRef="P4_T5">
+      <conditionExpression xsi:type="tFormalExpression">${erstgespraechBestanden == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P4_sf_end2" sourceRef="P4_T_Absage2" targetRef="P4_End2" />
+    <sequenceFlow id="P4_sf11" sourceRef="P4_SP_Onboarding" targetRef="P4_End4" />
+    <userTask id="P4_T7" name="GF-Freigabe einholen" camunda:assignee="geschaeftsfuehrung">
+      <documentation>Die Personalabteilung legt der Geschäftsführung die Kandidatenentscheidung zur finalen Freigabe vor: Kandidatenprofil, Gehaltsvorschlag, geplanter Starttermin. Ausgabe: gfFreigabe (boolean), gfKommentar.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="gfFreigabe" label="Freigabe durch Geschäftsführung?" type="boolean" />
+          <camunda:formField id="gfKommentar" label="Kommentar" type="string" />
+        </camunda:formData>
+      </extensionElements>
+      <incoming>P4_sf7</incoming>
+      <outgoing>P4_sf8</outgoing>
+    </userTask>
+    <exclusiveGateway id="P4_GW3" name="GF-Freigabe erteilt?">
+      <incoming>P4_sf8</incoming>
+      <outgoing>P4_sf_nein3</outgoing>
+      <outgoing>P4_sf_ja3</outgoing>
+    </exclusiveGateway>
+    <subProcess id="P4_SP_Onboarding" name="Onboarding durchführen">
+      <documentation>Strukturierter Einarbeitungsprozess für neue Mitarbeitende. Umfasst administrative Anlage, technische Einrichtung, Materialausgabe, Einarbeitungsplanung und begleitete Praxisphase.
+Eingabevariablen: mitarbeiterId, stelle, startDatum, einsatzort
+Ausgabevariablen: onboardingAbgeschlossen, systemZugaengeAktiv, ausruestungAusgegeben, einarbeitungAbgeschlossen</documentation>
+      <incoming>Flow_0rvgaqm</incoming>
+      <outgoing>P4_sf11</outgoing>
+      <startEvent id="P4_SP_Start" name="Onboarding beginnt">
+        <outgoing>P4_SP_sf1</outgoing>
+      </startEvent>
+      <userTask id="P4_SP_T1" name="Stammdaten anlegen" camunda:assignee="personalabteilung">
+        <documentation>Die Personalabteilung legt die vollständigen Stammdaten des neuen Mitarbeitenden im HR-System an: Personalstamm, Bankverbindung, Steuerklasse, Sozialversicherung, Notfallkontakt. Ausgabe: mitarbeiterId (intern), personalAktAngelegt = true.</documentation>
+        <incoming>P4_SP_sf1</incoming>
+        <outgoing>P4_SP_sf2</outgoing>
+      </userTask>
+      <serviceTask id="P4_SP_T2" name="Systemzugänge einrichten" camunda:expression="${true}">
+        <documentation>Das IT-System richtet automatisch alle erforderlichen Zugänge ein: Mobile Auftrags-App, digitales Betriebstagebuch, E-Mail-Account, Fahrzeugbuchungssystem. REST-Anbindung an Identity-Management-System. Ausgabe: systemZugaengeAktiv = true, loginDaten (verschlüsselt).</documentation>
+        <incoming>P4_SP_sf2</incoming>
+        <outgoing>P4_SP_sf3</outgoing>
+      </serviceTask>
+      <userTask id="P4_SP_T3" name="Schutzausrüstung ausgeben" camunda:assignee="personalabteilung">
+        <documentation>Die Personalabteilung gibt dem neuen Mitarbeitenden die vollständige persönliche Schutzausrüstung (PSA) aus: Schutzkleidung, Atemschutzmaske, Handschuhe, Sicherheitsschuhe. Gegen Quittung. Ausgabe: ausruestungAusgegeben = true, ausruestungsListe.</documentation>
+        <incoming>P4_SP_sf3</incoming>
+        <outgoing>P4_SP_sf4</outgoing>
+      </userTask>
+      <userTask id="P4_SP_T4" name="Einarbeitungsplan erstellen" camunda:assignee="fachbereichsleitung">
+        <documentation>Die Fachbereichsleitung erstellt einen strukturierten Einarbeitungsplan: Hospitationstage, Schulungen (Gefahrgut, HACCP, Produktkunde), Einsatzbegleitung mit erfahrenem Techniker. Zeitrahmen: 4–6 Wochen. Ausgabe: einarbeitungsplanId, mentorId.</documentation>
+        <incoming>P4_SP_sf4</incoming>
+        <outgoing>P4_SP_sf5</outgoing>
+      </userTask>
+      <userTask id="P4_SP_T5" name="Einarbeitung begleiten und abschließen" camunda:assignee="mentor">
+        <documentation>Der zugewiesene Mentor (erfahrener Techniker) begleitet den neuen Mitarbeitenden während der Einarbeitungsphase durch reale Einsätze. Abschließende Kompetenzbeurteilung. Ausgabe: einarbeitungAbgeschlossen = true, kompetenzBeurteilung.</documentation>
+        <incoming>P4_SP_sf5</incoming>
+        <outgoing>P4_SP_sf6</outgoing>
+      </userTask>
+      <endEvent id="P4_SP_End" name="Onboarding abgeschlossen">
+        <incoming>P4_SP_sf6</incoming>
+      </endEvent>
+      <sequenceFlow id="P4_SP_sf1" sourceRef="P4_SP_Start" targetRef="P4_SP_T1" />
+      <sequenceFlow id="P4_SP_sf2" sourceRef="P4_SP_T1" targetRef="P4_SP_T2" />
+      <sequenceFlow id="P4_SP_sf3" sourceRef="P4_SP_T2" targetRef="P4_SP_T3" />
+      <sequenceFlow id="P4_SP_sf4" sourceRef="P4_SP_T3" targetRef="P4_SP_T4" />
+      <sequenceFlow id="P4_SP_sf5" sourceRef="P4_SP_T4" targetRef="P4_SP_T5" />
+      <sequenceFlow id="P4_SP_sf6" sourceRef="P4_SP_T5" targetRef="P4_SP_End" />
+    </subProcess>
+    <endEvent id="P4_End3" name="Einstellung nicht genehmigt">
+      <incoming>P4_sf_nein3</incoming>
+    </endEvent>
+    <endEvent id="P4_End4" name="Mitarbeiter erfolgreich eingestellt">
+      <incoming>P4_sf11</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_0rvgaqm" sourceRef="P4_MCE_VertragErhalten" targetRef="P4_SP_Onboarding" />
+    <userTask id="P4_MCE_VertragErhalten" name="Vertragseingang bestätigen" camunda:assignee="demo">
+      <documentation>HR bestätigt den Eingang des unterzeichneten Vertrags vom Kandidaten.</documentation>
+      <incoming>Flow_1be9o27</incoming>
+      <outgoing>Flow_0rvgaqm</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_1be9o27" sourceRef="P4_T8" targetRef="P4_MCE_VertragErhalten" />
+  </process>
+  <bpmndi:BPMNDiagram id="P4_Diagram">
+    <bpmndi:BPMNPlane id="P4_Diagram_plane" bpmnElement="Collab_P4">
+      <bpmndi:BPMNShape id="Shape_Part_PestPro_P4" bpmnElement="Part_PestPro_P4" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3200" height="950" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P4_PA" bpmnElement="Lane_P4_Personalabteilung" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="3170" height="390" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P4_FBL" bpmnElement="Lane_P4_Fachbereichsleitung" isHorizontal="true">
+        <dc:Bounds x="190" y="470" width="3170" height="130" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P4_GF" bpmnElement="Lane_P4_GF" isHorizontal="true">
+        <dc:Bounds x="190" y="600" width="3170" height="230" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P4_Mentor" bpmnElement="Lane_P4_Mentor" isHorizontal="true">
+        <dc:Bounds x="190" y="830" width="3170" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T6" bpmnElement="P4_T6">
+        <dc:Bounds x="1470" y="325" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T8" bpmnElement="P4_T8">
+        <dc:Bounds x="1930" y="325" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_Start" bpmnElement="P4_Start">
+        <dc:Bounds x="232" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="212" y="295" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T1" bpmnElement="P4_T1">
+        <dc:Bounds x="320" y="230" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T2" bpmnElement="P4_T2">
+        <dc:Bounds x="510" y="230" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T3" bpmnElement="P4_T3">
+        <dc:Bounds x="670" y="230" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_GW1" bpmnElement="P4_GW1" isMarkerVisible="true">
+        <dc:Bounds x="865" y="245" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="925" y="256.5" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T4" bpmnElement="P4_T4">
+        <dc:Bounds x="970" y="130" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T_Absage1" bpmnElement="P4_T_Absage1">
+        <dc:Bounds x="830" y="360" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_End1" bpmnElement="P4_End1">
+        <dc:Bounds x="1012" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1006" y="425" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_GW2" bpmnElement="P4_GW2" isMarkerVisible="true">
+        <dc:Bounds x="1150" y="145" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1142.5" y="107.5" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_End2" bpmnElement="P4_End2">
+        <dc:Bounds x="1282" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1276" y="315" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T_Absage2" bpmnElement="P4_T_Absage2">
+        <dc:Bounds x="1115" y="250" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T5" bpmnElement="P4_T5">
+        <dc:Bounds x="1285" y="505" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_T7" bpmnElement="P4_T7">
+        <dc:Bounds x="1660" y="640" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_GW3" bpmnElement="P4_GW3" isMarkerVisible="true">
+        <dc:Bounds x="1845" y="655" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1838" y="625" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_MCE_VertragErhalten" bpmnElement="P4_MCE_VertragErhalten">
+        <dc:Bounds x="2100" y="325" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_Onboarding" bpmnElement="P4_SP_Onboarding" isExpanded="true">
+        <dc:Bounds x="2210" y="840" width="1000" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_Start" bpmnElement="P4_SP_Start">
+        <dc:Bounds x="2242" y="907" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2231" y="950" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_T1" bpmnElement="P4_SP_T1">
+        <dc:Bounds x="2320" y="885" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_T2" bpmnElement="P4_SP_T2">
+        <dc:Bounds x="2480" y="885" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_T3" bpmnElement="P4_SP_T3">
+        <dc:Bounds x="2640" y="885" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_T4" bpmnElement="P4_SP_T4">
+        <dc:Bounds x="2800" y="885" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_T5" bpmnElement="P4_SP_T5">
+        <dc:Bounds x="2960" y="885" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_SP_End" bpmnElement="P4_SP_End">
+        <dc:Bounds x="3122" y="907" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3103" y="950" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf1" bpmnElement="P4_SP_sf1">
+        <di:waypoint x="2278" y="925" />
+        <di:waypoint x="2320" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf2" bpmnElement="P4_SP_sf2">
+        <di:waypoint x="2430" y="925" />
+        <di:waypoint x="2480" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf3" bpmnElement="P4_SP_sf3">
+        <di:waypoint x="2590" y="925" />
+        <di:waypoint x="2640" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf4" bpmnElement="P4_SP_sf4">
+        <di:waypoint x="2750" y="925" />
+        <di:waypoint x="2800" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf5" bpmnElement="P4_SP_sf5">
+        <di:waypoint x="2910" y="925" />
+        <di:waypoint x="2960" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_SP_sf6" bpmnElement="P4_SP_sf6">
+        <di:waypoint x="3070" y="925" />
+        <di:waypoint x="3122" y="925" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_P4_End3" bpmnElement="P4_End3">
+        <dc:Bounds x="1852" y="752" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1829" y="795" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P4_End4" bpmnElement="P4_End4">
+        <dc:Bounds x="3282" y="902" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3273" y="945" width="54" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_P4_sf6" bpmnElement="P4_sf6">
+        <di:waypoint x="1380" y="505" />
+        <di:waypoint x="1380" y="365" />
+        <di:waypoint x="1470" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf7" bpmnElement="P4_sf7">
+        <di:waypoint x="1600" y="365" />
+        <di:waypoint x="1630" y="365" />
+        <di:waypoint x="1630" y="680" />
+        <di:waypoint x="1660" y="680" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf8" bpmnElement="P4_sf8">
+        <di:waypoint x="1780" y="680" />
+        <di:waypoint x="1845" y="680" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_nein3" bpmnElement="P4_sf_nein3">
+        <di:waypoint x="1870" y="705" />
+        <di:waypoint x="1870" y="752" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1878" y="705" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_ja3" bpmnElement="P4_sf_ja3">
+        <di:waypoint x="1895" y="680" />
+        <di:waypoint x="1980" y="680" />
+        <di:waypoint x="1980" y="405" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1891" y="658" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf1" bpmnElement="P4_sf1">
+        <di:waypoint x="268" y="270" />
+        <di:waypoint x="320" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf2" bpmnElement="P4_sf2">
+        <di:waypoint x="440" y="270" />
+        <di:waypoint x="510" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf3" bpmnElement="P4_sf3">
+        <di:waypoint x="630" y="270" />
+        <di:waypoint x="670" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf4" bpmnElement="P4_sf4">
+        <di:waypoint x="790" y="270" />
+        <di:waypoint x="865" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_nein1" bpmnElement="P4_sf_nein1">
+        <di:waypoint x="890" y="295" />
+        <di:waypoint x="890" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="896" y="323" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_ja1" bpmnElement="P4_sf_ja1">
+        <di:waypoint x="890" y="245" />
+        <di:waypoint x="890" y="170" />
+        <di:waypoint x="970" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="817" y="191" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf5" bpmnElement="P4_sf5">
+        <di:waypoint x="1090" y="170" />
+        <di:waypoint x="1150" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_end1" bpmnElement="P4_sf_end1">
+        <di:waypoint x="950" y="400" />
+        <di:waypoint x="1012" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_nein2" bpmnElement="P4_sf_nein2">
+        <di:waypoint x="1175" y="195" />
+        <di:waypoint x="1175" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1187" y="205" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_ja2" bpmnElement="P4_sf_ja2">
+        <di:waypoint x="1200" y="170" />
+        <di:waypoint x="1330" y="170" />
+        <di:waypoint x="1330" y="505" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1209" y="152" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf_end2" bpmnElement="P4_sf_end2">
+        <di:waypoint x="1235" y="290" />
+        <di:waypoint x="1282" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P4_sf11" bpmnElement="P4_sf11">
+        <di:waypoint x="3210" y="920" />
+        <di:waypoint x="3282" y="920" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rvgaqm_di" bpmnElement="Flow_0rvgaqm">
+        <di:waypoint x="2160" y="405" />
+        <di:waypoint x="2160" y="623" />
+        <di:waypoint x="2710" y="623" />
+        <di:waypoint x="2710" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1be9o27_di" bpmnElement="Flow_1be9o27">
+        <di:waypoint x="2060" y="365" />
+        <di:waypoint x="2100" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Part_Bewerber_P4" bpmnElement="Part_Bewerber_P4" isHorizontal="true">
+        <dc:Bounds x="160" y="1060" width="3200" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_MF_P4_Absage1ToBewerber" bpmnElement="MF_P4_Absage1ToBewerber">
+        <di:waypoint x="890" y="440" />
+        <di:waypoint x="890" y="1060" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="897" y="857" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_P4_Absage2ToBewerber" bpmnElement="MF_P4_Absage2ToBewerber">
+        <di:waypoint x="1175" y="330" />
+        <di:waypoint x="1175" y="1060" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1178" y="850" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_P4_VertragsangebotToBewerber" bpmnElement="MF_P4_VertragsangebotToBewerber">
+        <di:waypoint x="2030" y="410" />
+        <di:waypoint x="2030" y="1060" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2029" y="857" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

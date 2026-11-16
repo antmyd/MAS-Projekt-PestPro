@@ -1,0 +1,14 @@
+﻿{
+  "Name": "Befallsart(1)",
+  "Type": "Element",
+  "TaxonomyType": "Dropdown",
+  "Id": "gnrxOgZo5k6pmvYFyrQa-A",
+  "Reference": "FZ-gsJOMwU-CwQ0auh4K5w/gnrxOgZo5k6pmvYFyrQa-A",
+  "ParentRef": "FZ-gsJOMwU-CwQ0auh4K5w/S9-T3BLizUGSo8bV98QY2A",
+  "Created": "2026-06-19T15:21:44.9701144Z",
+  "Updated": "2026-06-19T15:21:44.9701144Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.31.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=26.4.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

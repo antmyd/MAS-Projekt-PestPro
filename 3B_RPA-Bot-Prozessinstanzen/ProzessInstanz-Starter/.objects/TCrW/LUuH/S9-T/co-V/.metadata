@@ -1,0 +1,14 @@
+﻿{
+  "Name": "Login Button klicken",
+  "Type": "Element",
+  "TaxonomyType": "Button",
+  "Id": "co-VdoDHjkSugTEf5angXw",
+  "Reference": "FZ-gsJOMwU-CwQ0auh4K5w/co-VdoDHjkSugTEf5angXw",
+  "ParentRef": "FZ-gsJOMwU-CwQ0auh4K5w/S9-T3BLizUGSo8bV98QY2A",
+  "Created": "2026-06-19T14:38:55.2175422Z",
+  "Updated": "2026-06-19T14:38:55.2175422Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.31.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=26.4.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

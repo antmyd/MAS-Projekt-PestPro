@@ -1,0 +1,15 @@
+# Zugangsdaten (nur .env.example gehoert ins Repo)
+.env
+
+# Node.js
+node_modules/
+
+# UiPath: lokale Build-Caches, DLLs, Datenbanken (werden von Studio neu erzeugt)
+**/.local/
+
+# Sonstiges
+.Rhistory
+.~lock.*#
+~$*
+*.tmp
+Thumbs.db

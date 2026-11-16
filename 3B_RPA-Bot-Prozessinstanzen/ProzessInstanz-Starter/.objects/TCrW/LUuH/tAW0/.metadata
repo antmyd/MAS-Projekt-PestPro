@@ -1,0 +1,13 @@
+﻿{
+  "Name": "Welcome to the Camunda Platform - Google Chro",
+  "Type": "Screen",
+  "Id": "tAW09yXLBkWS8JE-OVMMzw",
+  "Reference": "FZ-gsJOMwU-CwQ0auh4K5w/tAW09yXLBkWS8JE-OVMMzw",
+  "ParentRef": "FZ-gsJOMwU-CwQ0auh4K5w/LUuHzi0gBEytFHZ7D74guA",
+  "Created": "2026-06-19T14:30:09.3500614Z",
+  "Updated": "2026-06-19T14:30:09.3500614Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.31.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=26.4.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

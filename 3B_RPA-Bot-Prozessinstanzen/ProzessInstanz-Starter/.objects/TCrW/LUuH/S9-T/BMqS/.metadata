@@ -1,0 +1,14 @@
+﻿{
+  "Name": "Login Username eingeben",
+  "Type": "Element",
+  "TaxonomyType": "Icon",
+  "Id": "BMqSPndhOkavtM5-dcghmg",
+  "Reference": "FZ-gsJOMwU-CwQ0auh4K5w/BMqSPndhOkavtM5-dcghmg",
+  "ParentRef": "FZ-gsJOMwU-CwQ0auh4K5w/S9-T3BLizUGSo8bV98QY2A",
+  "Created": "2026-06-19T14:33:59.2851068Z",
+  "Updated": "2026-06-19T14:33:59.2851068Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.31.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=26.4.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

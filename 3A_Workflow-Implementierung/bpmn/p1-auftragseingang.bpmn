@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_P1_Auftragseingang_v2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.0">
+  <collaboration id="Collab_P1">
+    <participant id="Part_PestPro_P1" name="PestPro GmbH" processRef="P1_Auftragseingang" />
+    <participant id="Part_Kunde_P1" name="Kunde" />
+    <messageFlow id="MF_P1_AngebotToKunde" name="Angebot senden" sourceRef="P1_Task3" targetRef="Part_Kunde_P1" />
+    <messageFlow id="MF_P1_TerminToKunde" name="Terminbestätigung" sourceRef="P1_Task8" targetRef="Part_Kunde_P1" />
+  </collaboration>
+  <process id="P1_Auftragseingang" name="Auftragseingang und Angebotserstellung" isExecutable="true" camunda:historyTimeToLive="P180D">
+    <laneSet id="LaneSet_P1">
+      <lane id="Lane_P1_Disponent" name="Disponent">
+        <flowNodeRef>P1_Task7</flowNodeRef>
+        <flowNodeRef>P1_Task8</flowNodeRef>
+        <flowNodeRef>P1_End</flowNodeRef>
+      </lane>
+      <lane id="Lane_P1_Vertrieb" name="Vertrieb">
+        <flowNodeRef>P1_Task2</flowNodeRef>
+        <flowNodeRef>P1_Task3</flowNodeRef>
+      </lane>
+      <lane id="Lane_P1_Innendienst" name="Innendienst">
+        <flowNodeRef>P1_GW2</flowNodeRef>
+        <flowNodeRef>P1_Task5</flowNodeRef>
+        <flowNodeRef>P1_GW3</flowNodeRef>
+        <flowNodeRef>P1_Start</flowNodeRef>
+        <flowNodeRef>P1_Task1</flowNodeRef>
+        <flowNodeRef>P1_GW1</flowNodeRef>
+        <flowNodeRef>P1_Task6</flowNodeRef>
+        <flowNodeRef>P1_End2</flowNodeRef>
+        <flowNodeRef>P1_MCE_KundenAntwort</flowNodeRef>
+      </lane>
+    </laneSet>
+    <userTask id="P1_Task2" name="Angebot erstellen" camunda:assignee="vertrieb">
+      <documentation>Der Vertrieb erstellt auf Basis von Befallsart, Betriebsgröße und gewünschter Leistungstiefe ein individuelles Angebot. Frist: 2 Werktage. Ergebnis: angebotsBetrag, angebotsDokumentId, gültigBis.</documentation>
+      <incoming>P1_sf_standard</incoming>
+      <incoming>P1_sf_aenderung</incoming>
+      <outgoing>P1_sf3</outgoing>
+    </userTask>
+    <serviceTask id="P1_Task3" name="Angebot per E-Mail versenden" camunda:expression="${true}">
+      <documentation>Das System versendet das erstellte Angebot automatisch per E-Mail an die hinterlegte Kontaktadresse (kontaktEmail). Das Angebot enthält einen personalisierten Link zur digitalen Annahme.</documentation>
+      <incoming>P1_sf3</incoming>
+      <outgoing>Flow_1jbygtd</outgoing>
+    </serviceTask>
+    <exclusiveGateway id="P1_GW2" name="Kundenentscheidung?">
+      <incoming>P1_sf5</incoming>
+      <outgoing>P1_sf_annahme</outgoing>
+      <outgoing>P1_sf_aenderung</outgoing>
+      <outgoing>P1_sf_ablehnung</outgoing>
+    </exclusiveGateway>
+    <userTask id="P1_Task5" name="Auftragsdatensatz anlegen" camunda:assignee="innendienst">
+      <documentation>Der Innendienst legt im System einen vollständigen Auftragsdatensatz an: Kundenstammdaten, vereinbarte Leistung, Vertragsnummer, Priorität. Ergebnis: auftragId.</documentation>
+      <incoming>P1_sf_annahme</incoming>
+      <outgoing>P1_sf6</outgoing>
+    </userTask>
+    <exclusiveGateway id="P1_GW3" name="Routing zur Disposition">
+      <incoming>P1_sf6</incoming>
+      <incoming>P1_sf_notfall</incoming>
+      <outgoing>P1_sf7</outgoing>
+    </exclusiveGateway>
+    <userTask id="P1_Task7" name="Techniker auswählen und Termin einplanen" camunda:assignee="disponent">
+      <documentation>Der Disponent wählt einen verfügbaren, zertifizierten Techniker mit passender Qualifikation für die Befallsart aus, prüft Anfahrt und plant den Einsatztermin. Bei Notfällen: Termin innerhalb von 24 Stunden. Ergebnis: technikerId, einsatztermin.</documentation>
+      <incoming>P1_sf7</incoming>
+      <outgoing>P1_sf8</outgoing>
+    </userTask>
+    <serviceTask id="P1_Task8" name="Terminbestätigung an Kunden senden" camunda:expression="${true}">
+      <documentation>Das System versendet automatisch eine Terminbestätigung per E-Mail an den Kunden mit Datum, Uhrzeit, Name des Technikers und Hinweisen zur Vorbereitung des Einsatzes.</documentation>
+      <incoming>P1_sf8</incoming>
+      <outgoing>P1_sf_end</outgoing>
+    </serviceTask>
+    <endEvent id="P1_End" name="Auftrag disponiert">
+      <incoming>P1_sf_end</incoming>
+    </endEvent>
+    <startEvent id="P1_Start" name="Anfrage eingehend">
+      <documentation>Startformular: Kundenanfrage wird aufgenommen. Erfasste Felder: Firmenname, Kontaktperson, Anfrageart (Notfall / Standard), Befallsart, Betriebsgröße, Wunschtermin, Kontaktkanal.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="firmenname" label="Firmenname" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="kontaktperson" label="Kontaktperson" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="kontaktEmail" label="E-Mail" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="anfrageart" label="Anfrageart" type="enum">
+            <camunda:value id="notfall" name="Notfall (akuter Befall)" />
+            <camunda:value id="standard" name="Standard (Angebot gewünscht)" />
+          </camunda:formField>
+          <camunda:formField id="befallsart" label="Befallsart" type="enum">
+            <camunda:value id="nagel" name="Nagetiere" />
+            <camunda:value id="insekten" name="Insekten" />
+            <camunda:value id="sonstige" name="Sonstige" />
+          </camunda:formField>
+          <camunda:formField id="betriebsgroesse" label="Betriebsgröße (m²)" type="long" />
+          <camunda:formField id="wunschtermin" label="Wunschtermin" type="date" />
+          <camunda:formField id="notfallCheck" label="Ist es ein Notfall?" type="boolean" />
+        </camunda:formData>
+      </extensionElements>
+      <outgoing>P1_sf1</outgoing>
+    </startEvent>
+    <userTask id="P1_Task1" name="Anfrage entgegennehmen und klassifizieren" camunda:assignee="innendienst">
+      <documentation>Der Innendienst nimmt die Anfrage an und klassifiziert sie: Liegt ein Notfall mit akutem Befall vor (notfallCheck = true), wird der Auftrag sofort in die Disposition übergeben. Im Standardfall wird der Vertrieb mit der Angebotserstellung beauftragt. Felder prüfen: firmenname, kontaktperson, befallsart, anfrageart.</documentation>
+      <incoming>P1_sf1</incoming>
+      <outgoing>P1_sf2</outgoing>
+    </userTask>
+    <exclusiveGateway id="P1_GW1" name="Notfall?">
+      <incoming>P1_sf2</incoming>
+      <outgoing>P1_sf_notfall</outgoing>
+      <outgoing>P1_sf_standard</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="P1_sf_standard" name="Standard" sourceRef="P1_GW1" targetRef="P1_Task2">
+      <conditionExpression xsi:type="tFormalExpression">${notfallCheck == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P1_sf_aenderung" name="Änderungswunsch" sourceRef="P1_GW2" targetRef="P1_Task2">
+      <conditionExpression xsi:type="tFormalExpression">${kundenEntscheidung == 'aenderung'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P1_sf3" sourceRef="P1_Task2" targetRef="P1_Task3" />
+    <sequenceFlow id="P1_sf5" sourceRef="P1_MCE_KundenAntwort" targetRef="P1_GW2" />
+    <sequenceFlow id="P1_sf_annahme" name="Annahme" sourceRef="P1_GW2" targetRef="P1_Task5">
+      <conditionExpression xsi:type="tFormalExpression">${kundenEntscheidung == 'annahme'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P1_sf_ablehnung" name="Ablehnung" sourceRef="P1_GW2" targetRef="P1_Task6">
+      <conditionExpression xsi:type="tFormalExpression">${kundenEntscheidung == 'ablehnung'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P1_sf6" sourceRef="P1_Task5" targetRef="P1_GW3" />
+    <sequenceFlow id="P1_sf_archiv_end" sourceRef="P1_Task6" targetRef="P1_End2" />
+    <sequenceFlow id="P1_sf_notfall" name="Notfall" sourceRef="P1_GW1" targetRef="P1_GW3">
+      <conditionExpression xsi:type="tFormalExpression">${notfallCheck == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P1_sf7" sourceRef="P1_GW3" targetRef="P1_Task7" />
+    <sequenceFlow id="P1_sf8" sourceRef="P1_Task7" targetRef="P1_Task8" />
+    <sequenceFlow id="P1_sf_end" sourceRef="P1_Task8" targetRef="P1_End" />
+    <sequenceFlow id="P1_sf1" sourceRef="P1_Start" targetRef="P1_Task1" />
+    <sequenceFlow id="P1_sf2" sourceRef="P1_Task1" targetRef="P1_GW1" />
+    <sequenceFlow id="Flow_1jbygtd" sourceRef="P1_Task3" targetRef="P1_MCE_KundenAntwort" />
+    <userTask id="P1_Task6" name="Vorgang archivieren" camunda:assignee="innendienst">
+      <documentation>Bei Ablehnung wird der Vorgang mit Ablehnungsgrund archiviert. Der Kontakt wird für spätere Reaktivierungskampagnen markiert (reaktivierungsMöglich = true/false).</documentation>
+      <incoming>P1_sf_ablehnung</incoming>
+      <outgoing>P1_sf_archiv_end</outgoing>
+    </userTask>
+    <endEvent id="P1_End2" name="Vorgang archiviert">
+      <incoming>P1_sf_archiv_end</incoming>
+    </endEvent>
+    <userTask id="P1_MCE_KundenAntwort" name="Kundenentscheidung erfassen" camunda:assignee="demo">
+      <documentation>Kundenentscheidung zum Angebot erfassen.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="kundenEntscheidung" label="Kundenentscheidung" type="enum">
+            <camunda:value id="annahme" name="Annahme" />
+            <camunda:value id="aenderung" name="Änderungswunsch" />
+            <camunda:value id="ablehnung" name="Ablehnung" />
+          </camunda:formField>
+        </camunda:formData>
+      </extensionElements>
+      <incoming>Flow_1jbygtd</incoming>
+      <outgoing>P1_sf5</outgoing>
+    </userTask>
+  </process>
+  <bpmndi:BPMNDiagram id="P1_Diagram">
+    <bpmndi:BPMNPlane id="P1_Diagram_plane" bpmnElement="Collab_P1">
+      <bpmndi:BPMNShape id="Shape_Part_PestPro_P1" bpmnElement="Part_PestPro_P1" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1800" height="670" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P1_Innendienst" bpmnElement="Lane_P1_Innendienst" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1770" height="360" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P1_Vertrieb" bpmnElement="Lane_P1_Vertrieb" isHorizontal="true">
+        <dc:Bounds x="190" y="440" width="1770" height="140" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P1_Disponent" bpmnElement="Lane_P1_Disponent" isHorizontal="true">
+        <dc:Bounds x="190" y="580" width="1770" height="170" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task2" bpmnElement="P1_Task2">
+        <dc:Bounds x="590" y="460" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task3" bpmnElement="P1_Task3">
+        <dc:Bounds x="770" y="460" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_GW2" bpmnElement="P1_GW2" isMarkerVisible="true">
+        <dc:Bounds x="1030" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1012" y="236" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task5" bpmnElement="P1_Task5">
+        <dc:Bounds x="1130" y="250" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_GW3" bpmnElement="P1_GW3" isMarkerVisible="true">
+        <dc:Bounds x="1315" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1371" y="276" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task7" bpmnElement="P1_Task7">
+        <dc:Bounds x="1430" y="620" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task8" bpmnElement="P1_Task8">
+        <dc:Bounds x="1610" y="620" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_End" bpmnElement="P1_End">
+        <dc:Bounds x="1892" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1867" y="685" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Start" bpmnElement="P1_Start">
+        <dc:Bounds x="260" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="285" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task1" bpmnElement="P1_Task1">
+        <dc:Bounds x="345" y="220" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_GW1" bpmnElement="P1_GW1" isMarkerVisible="true">
+        <dc:Bounds x="525" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="585" y="253" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_Task6" bpmnElement="P1_Task6">
+        <dc:Bounds x="1130" y="350" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_End2" bpmnElement="P1_End2">
+        <dc:Bounds x="1882" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1856" y="415" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P1_MCE_KundenAntwort" bpmnElement="P1_MCE_KundenAntwort">
+        <dc:Bounds x="855" y="250" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_standard" bpmnElement="P1_sf_standard">
+        <di:waypoint x="550" y="285" />
+        <di:waypoint x="550" y="500" />
+        <di:waypoint x="590" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="554" y="383" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_aenderung" bpmnElement="P1_sf_aenderung">
+        <di:waypoint x="1055" y="265" />
+        <di:waypoint x="1055" y="220" />
+        <di:waypoint x="650" y="220" />
+        <di:waypoint x="650" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="818" y="202" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf3" bpmnElement="P1_sf3">
+        <di:waypoint x="710" y="500" />
+        <di:waypoint x="770" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf5" bpmnElement="P1_sf5">
+        <di:waypoint x="975" y="290" />
+        <di:waypoint x="1030" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_annahme" bpmnElement="P1_sf_annahme">
+        <di:waypoint x="1080" y="290" />
+        <di:waypoint x="1130" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1076" y="272" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_ablehnung" bpmnElement="P1_sf_ablehnung">
+        <di:waypoint x="1055" y="315" />
+        <di:waypoint x="1055" y="390" />
+        <di:waypoint x="1130" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1058" y="365" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf6" bpmnElement="P1_sf6">
+        <di:waypoint x="1250" y="290" />
+        <di:waypoint x="1315" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_archiv_end" bpmnElement="P1_sf_archiv_end">
+        <di:waypoint x="1250" y="390" />
+        <di:waypoint x="1882" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_notfall" bpmnElement="P1_sf_notfall">
+        <di:waypoint x="550" y="235" />
+        <di:waypoint x="550" y="120" />
+        <di:waypoint x="1340" y="120" />
+        <di:waypoint x="1340" y="265" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="932" y="102" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf7" bpmnElement="P1_sf7">
+        <di:waypoint x="1340" y="315" />
+        <di:waypoint x="1340" y="660" />
+        <di:waypoint x="1430" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf8" bpmnElement="P1_sf8">
+        <di:waypoint x="1550" y="660" />
+        <di:waypoint x="1610" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf_end" bpmnElement="P1_sf_end">
+        <di:waypoint x="1730" y="660" />
+        <di:waypoint x="1892" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf1" bpmnElement="P1_sf1">
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="345" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P1_sf2" bpmnElement="P1_sf2">
+        <di:waypoint x="465" y="260" />
+        <di:waypoint x="525" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jbygtd_di" bpmnElement="Flow_1jbygtd">
+        <di:waypoint x="890" y="500" />
+        <di:waypoint x="915" y="500" />
+        <di:waypoint x="915" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Part_Kunde_P1" bpmnElement="Part_Kunde_P1" isHorizontal="true">
+        <dc:Bounds x="160" y="780" width="1800" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_MF_P1_AngebotToKunde" bpmnElement="MF_P1_AngebotToKunde">
+        <di:waypoint x="830" y="540" />
+        <di:waypoint x="830" y="780" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="839" y="650" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

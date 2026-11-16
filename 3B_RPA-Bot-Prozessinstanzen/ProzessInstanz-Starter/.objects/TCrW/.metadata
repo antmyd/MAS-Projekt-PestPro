@@ -1,0 +1,12 @@
+﻿{
+  "Name": "Welcome to the Camunda Platform - Google Chrome",
+  "Type": "App",
+  "Id": "TCrWFtlz_U6BN5F9jOWuaQ",
+  "Reference": "FZ-gsJOMwU-CwQ0auh4K5w/TCrWFtlz_U6BN5F9jOWuaQ",
+  "Created": "2026-06-19T14:30:09.2877105Z",
+  "Updated": "2026-06-19T14:30:09.2877105Z",
+  "CreatedBy": [
+    "UiPath.UIAutomationCore, Version=25.10.31.0, Culture=neutral, PublicKeyToken=null",
+    "UiPath.Platform, Version=26.4.0.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}

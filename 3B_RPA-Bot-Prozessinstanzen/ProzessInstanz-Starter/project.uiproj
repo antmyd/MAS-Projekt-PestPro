@@ -1,0 +1,6 @@
+{
+  "Name": "ProzessInstanz-Starter",
+  "ProjectType": "Process",
+  "Description": "RPA-Bot, der sich eigenständig in die Camunda Tasklist einloggt und\r\nzehn neue Prozessinstanzen startet.\r\n",
+  "MainFile": "Main.xaml"
+}

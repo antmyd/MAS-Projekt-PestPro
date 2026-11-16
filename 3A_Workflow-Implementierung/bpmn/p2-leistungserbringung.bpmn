@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_P2_Leistungserbringung_v2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.0">
+  <collaboration id="Collab_P2">
+    <participant id="Part_PestPro_P2" name="PestPro GmbH" processRef="P2_Leistungserbringung" />
+    <participant id="Part_Kunde_P2" name="Kunde" />
+    <messageFlow id="MF_P2_BerichtZumUnterzeichnen" name="Bericht zum Unterzeichnen" sourceRef="P2_SP_ThrowMSG" targetRef="Part_Kunde_P2" />
+    <messageFlow id="MF_P2_BerichtAnKunden" name="Freigegebener Bericht" sourceRef="P2_T7" targetRef="Part_Kunde_P2" />
+  </collaboration>
+  <process id="P2_Leistungserbringung" name="Leistungserbringung (Schädlingsbekämpfungseinsatz)" isExecutable="true" camunda:historyTimeToLive="P180D">
+    <laneSet id="LaneSet_P2">
+      <lane id="Lane_P2_QV" name="Qualitätsverantwortlicher">
+        <flowNodeRef>P2_End</flowNodeRef>
+        <flowNodeRef>P2_GW_Join</flowNodeRef>
+        <flowNodeRef>P2_T4</flowNodeRef>
+        <flowNodeRef>P2_T5</flowNodeRef>
+        <flowNodeRef>P2_GW_QS</flowNodeRef>
+        <flowNodeRef>P2_T7</flowNodeRef>
+        <flowNodeRef>P2_T8</flowNodeRef>
+      </lane>
+      <lane id="Lane_P2_Techniker" name="Techniker">
+        <flowNodeRef>P2_Start</flowNodeRef>
+        <flowNodeRef>P2_T1</flowNodeRef>
+        <flowNodeRef>P2_T2</flowNodeRef>
+        <flowNodeRef>P2_T3</flowNodeRef>
+        <flowNodeRef>P2_T6</flowNodeRef>
+        <flowNodeRef>P2_SP_Einsatz</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="P2_Start" name="Auftrag bereitgestellt">
+      <documentation>Startformular: Einsatz wird aus dem Auftragssystem übergeben. Eingabevariablen: auftragId, kundeId, firmenname, einsatzAdresse, befallsart, vertragTyp, technikerId, einsatztermin.</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="auftragId" label="Auftrags-ID" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="kundeId" label="Kunden-ID" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="firmenname" label="Firmenname" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="einsatzAdresse" label="Einsatzadresse" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="befallsart" label="Befallsart" type="enum">
+            <camunda:value id="nagel" name="Nagetiere" />
+            <camunda:value id="insekten" name="Insekten" />
+            <camunda:value id="sonstige" name="Sonstige" />
+          </camunda:formField>
+          <camunda:formField id="vertragTyp" label="Vertragstyp" type="enum">
+            <camunda:value id="jahresvertrag" name="Jahresvertrag" />
+            <camunda:value id="einmalauftrag" name="Einmalauftrag" />
+          </camunda:formField>
+          <camunda:formField id="technikerId" label="Techniker-ID" type="string" />
+          <camunda:formField id="einsatztermin" label="Einsatztermin" type="date">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </extensionElements>
+      <outgoing>P2_sf1</outgoing>
+    </startEvent>
+    <userTask id="P2_T1" name="Auftrag abrufen" camunda:assignee="techniker">
+      <documentation>Der Techniker ruft den disponierten Auftrag im mobilen System ab und prüft alle relevanten Informationen: Einsatzadresse, Befallsart, Kundenansprechpartner, benötigte Materialien und besondere Hinweise. Eingabe: auftragId. Ausgabe: auftragDetails bestätigt.</documentation>
+      <incoming>P2_sf1</incoming>
+      <outgoing>P2_sf2</outgoing>
+    </userTask>
+    <userTask id="P2_T2" name="Ausrüstung vorbereiten" camunda:assignee="techniker">
+      <documentation>Der Techniker stellt entsprechend der Befallsart die benötigten Materialien, Schutzausrüstung (PSA) und zugelassenen Biozidprodukte zusammen. Vollständigkeitsprüfung anhand der Checkliste. Eingabe: befallsart. Ausgabe: ausruestungKomplett (boolean).</documentation>
+      <incoming>P2_sf2</incoming>
+      <outgoing>P2_sf3</outgoing>
+    </userTask>
+    <userTask id="P2_T3" name="Beim Kunden anmelden" camunda:assignee="techniker">
+      <documentation>Der Techniker meldet sich beim zuständigen Ansprechpartner des Kunden an, weist seinen IHK-Sachkundenachweis vor und stimmt den geplanten Einsatzablauf ab. Ausgabe: kundeAnwesend (boolean), ansprechpartnerName.</documentation>
+      <incoming>P2_sf3</incoming>
+      <outgoing>P2_sf4</outgoing>
+    </userTask>
+    <endEvent id="P2_End" name="Auftrag erfolgreich abgeschlossen">
+      <incoming>P2_sf10</incoming>
+    </endEvent>
+    <subProcess id="P2_SP_Einsatz" name="Einsatz vor Ort">
+      <documentation>Kernprozess der Schädlingsbekämpfung. Umfasst Inspektion, Methodenwahl, Durchführung der Bekämpfung, HACCP-konforme Dokumentation sowie digitale Abnahme durch den Kunden per Message-Austausch.
+Eingabevariablen: auftragId, befallsart, einsatzAdresse, kundeId
+Ausgabevariablen: einsatzBerichtId, befund, massnahmen, berichtUnterzeichnet</documentation>
+      <incoming>P2_sf4</incoming>
+      <outgoing>P2_sf5</outgoing>
+      <startEvent id="P2_SP_Start" name="Einsatz beginnt">
+        <outgoing>P2_SP_sf1</outgoing>
+      </startEvent>
+      <userTask id="P2_SP_T1" name="Inspektion durchführen" camunda:assignee="techniker">
+        <documentation>Der Techniker inspiziert systematisch alle betroffenen Bereiche. Er lokalisiert Befallsschwerpunkte, bewertet Befallsstärke (leicht / mittel / stark) und dokumentiert Einschlupfwege. Ausgabe: befund (Befallsstärke, betroffene Flächen in m², Einschlupfwege).</documentation>
+        <incoming>P2_SP_sf1</incoming>
+        <outgoing>P2_SP_sf2</outgoing>
+      </userTask>
+      <userTask id="P2_SP_T2" name="Bekämpfungsmethode wählen" camunda:assignee="techniker">
+        <documentation>Auf Basis des Befundes wählt der Techniker die fachlich geeignete Bekämpfungsmethode: Fallensysteme, Köderauslagen, Sprühbehandlung oder Begasung. Die Wahl wird mit Begründung erfasst. Ausgabe: methode (enum), biozidProduktId.</documentation>
+        <incoming>P2_SP_sf2</incoming>
+        <outgoing>P2_SP_sf3</outgoing>
+      </userTask>
+      <userTask id="P2_SP_T3" name="Bekämpfung durchführen" camunda:assignee="techniker">
+        <documentation>Der Techniker führt die gewählten Bekämpfungsmaßnahmen fachgerecht durch. Er verwendet ausschließlich zugelassene Biozidprodukte und hält gesetzliche Sicherheitsabstände und Wartezeiten ein. Ausgabe: massnahmen (Liste der durchgeführten Maßnahmen), mengen.</documentation>
+        <incoming>P2_SP_sf3</incoming>
+        <outgoing>P2_SP_sf4</outgoing>
+      </userTask>
+      <userTask id="P2_SP_T4" name="Einsatz im Betriebstagebuch dokumentieren" camunda:assignee="techniker">
+        <documentation>HACCP-konforme Dokumentation aller verwendeten Mittel, Mengen, behandelten Flächen und Befallsschwerpunkte im digitalen Betriebstagebuch. Pflichtfelder gemäß DIN 77002. Ausgabe: einsatzBerichtId, dokumentationsStatus = 'vollstaendig'.</documentation>
+        <incoming>P2_SP_sf4</incoming>
+        <outgoing>P2_SP_sf5</outgoing>
+      </userTask>
+      <intermediateThrowEvent id="P2_SP_ThrowMSG" name="Bericht zum Unterzeichnen senden">
+        <documentation>Der Techniker sendet den erstellten Einsatzbericht digital an den Kundenansprechpartner zur Unterzeichnung. Dies erfolgt per Message-Flow an den Kunden-Pool.</documentation>
+        <incoming>P2_SP_sf5</incoming>
+        <outgoing>P2_SP_sf6</outgoing>
+        <messageEventDefinition id="MED_P2_BerichtSenden" />
+      </intermediateThrowEvent>
+      <userTask id="P2_SP_CatchMSG" name="Unterschrift bestätigen" camunda:assignee="techniker">
+        <documentation>Der Techniker bestätigt dass die Unterschrift des Kunden vorliegt. Ausgabe: berichtUnterzeichnet = true.</documentation>
+        <incoming>P2_SP_sf6</incoming>
+        <outgoing>P2_SP_sf7</outgoing>
+      </userTask>
+      <endEvent id="P2_SP_End" name="Einsatz abgeschlossen">
+        <incoming>P2_SP_sf7</incoming>
+      </endEvent>
+      <sequenceFlow id="P2_SP_sf1" sourceRef="P2_SP_Start" targetRef="P2_SP_T1" />
+      <sequenceFlow id="P2_SP_sf2" sourceRef="P2_SP_T1" targetRef="P2_SP_T2" />
+      <sequenceFlow id="P2_SP_sf3" sourceRef="P2_SP_T2" targetRef="P2_SP_T3" />
+      <sequenceFlow id="P2_SP_sf4" sourceRef="P2_SP_T3" targetRef="P2_SP_T4" />
+      <sequenceFlow id="P2_SP_sf5" sourceRef="P2_SP_T4" targetRef="P2_SP_ThrowMSG" />
+      <sequenceFlow id="P2_SP_sf6" sourceRef="P2_SP_ThrowMSG" targetRef="P2_SP_CatchMSG" />
+      <sequenceFlow id="P2_SP_sf7" sourceRef="P2_SP_CatchMSG" targetRef="P2_SP_End" />
+    </subProcess>
+    <exclusiveGateway id="P2_GW_Join" name="Routing QS-Prüfung">
+      <incoming>P2_sf5</incoming>
+      <incoming>P2_sf_loop</incoming>
+      <outgoing>P2_sf6</outgoing>
+    </exclusiveGateway>
+    <serviceTask id="P2_T4" name="Bericht an QS weiterleiten" camunda:type="external" camunda:topic="qs-ticket-erstellen">
+      <documentation>Das System übermittelt den unterzeichneten Einsatzbericht automatisch an den Qualitätsverantwortlichen (REST-Benachrichtigung). SLA: Prüfung innerhalb von 24 Stunden. Eingabe: einsatzBerichtId.</documentation>
+      <incoming>P2_sf6</incoming>
+      <outgoing>P2_sf7</outgoing>
+    </serviceTask>
+    <userTask id="P2_T5" name="Bericht prüfen und freigeben" camunda:assignee="qualitaetsverantwortlicher">
+      <documentation>Der Qualitätsverantwortliche prüft den Einsatzbericht auf: Vollständigkeit der HACCP-Dokumentation, korrekte Produktangaben, Plausibilität der Maßnahmen und Übereinstimmung mit dem Auftrag. Ergebnis: berichtFreigegeben (boolean), maengelHinweise (Text falls Nein).</documentation>
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="berichtFreigegeben" label="Bericht freigegeben?" type="boolean" />
+          <camunda:formField id="maengelHinweise" label="Mängelhinweise (falls Nein)" type="string" />
+        </camunda:formData>
+      </extensionElements>
+      <incoming>P2_sf7</incoming>
+      <outgoing>P2_sf8</outgoing>
+    </userTask>
+    <exclusiveGateway id="P2_GW_QS" name="Bericht freigegeben?">
+      <incoming>P2_sf8</incoming>
+      <outgoing>P2_sf_ja</outgoing>
+      <outgoing>P2_sf_nein</outgoing>
+    </exclusiveGateway>
+    <userTask id="P2_T6" name="Mängel beheben und Bericht korrigieren" camunda:assignee="techniker">
+      <documentation>Der Techniker erhält die konkreten Mängelhinweise des Qualitätsverantwortlichen und korrigiert den Einsatzbericht. Bei gravierenden Mängeln wird ein ergänzender Nacheinsatz dokumentiert. Eingabe: maengelHinweise. Ausgabe: einsatzBerichtId (aktualisiert), berichtKorrigiert = true.</documentation>
+      <incoming>P2_sf_nein</incoming>
+      <outgoing>P2_sf_loop</outgoing>
+    </userTask>
+    <serviceTask id="P2_T7" name="Bericht per E-Mail an Kunden senden" camunda:expression="${true}">
+      <documentation>Nach QS-Freigabe wird der freigegebene Einsatzbericht automatisch per E-Mail an den Kunden übermittelt. Bei Jahresvertragskunden wird der Bericht zusätzlich im HACCP-Dokumentationsportal archiviert.</documentation>
+      <incoming>P2_sf_ja</incoming>
+      <outgoing>P2_sf9</outgoing>
+    </serviceTask>
+    <serviceTask id="P2_T8" name="Rechnung automatisiert erstellen" camunda:type="external" camunda:topic="rechnung-erstellen">
+      <documentation>Das System generiert automatisch die Rechnung auf Basis der erfassten Einsatzdaten: verwendete Mittel und Mengen, Einsatzdauer, erbrachte Leistungsart. Bei Jahresvertragskunden wird die Leistung dem Vertragskonto gutgeschrieben statt separat berechnet.</documentation>
+      <incoming>P2_sf9</incoming>
+      <outgoing>P2_sf10</outgoing>
+    </serviceTask>
+    <sequenceFlow id="P2_sf1" sourceRef="P2_Start" targetRef="P2_T1" />
+    <sequenceFlow id="P2_sf2" sourceRef="P2_T1" targetRef="P2_T2" />
+    <sequenceFlow id="P2_sf3" sourceRef="P2_T2" targetRef="P2_T3" />
+    <sequenceFlow id="P2_sf4" sourceRef="P2_T3" targetRef="P2_SP_Einsatz" />
+    <sequenceFlow id="P2_sf10" sourceRef="P2_T8" targetRef="P2_End" />
+    <sequenceFlow id="P2_sf5" sourceRef="P2_SP_Einsatz" targetRef="P2_GW_Join" />
+    <sequenceFlow id="P2_sf_loop" name="Nachbesserung" sourceRef="P2_T6" targetRef="P2_GW_Join" />
+    <sequenceFlow id="P2_sf6" sourceRef="P2_GW_Join" targetRef="P2_T4" />
+    <sequenceFlow id="P2_sf7" sourceRef="P2_T4" targetRef="P2_T5" />
+    <sequenceFlow id="P2_sf8" sourceRef="P2_T5" targetRef="P2_GW_QS" />
+    <sequenceFlow id="P2_sf_ja" name="Ja (freigegeben)" sourceRef="P2_GW_QS" targetRef="P2_T7">
+      <conditionExpression xsi:type="tFormalExpression">${berichtFreigegeben == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P2_sf_nein" name="Nein (Mängel)" sourceRef="P2_GW_QS" targetRef="P2_T6">
+      <conditionExpression xsi:type="tFormalExpression">${berichtFreigegeben == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="P2_sf9" sourceRef="P2_T7" targetRef="P2_T8" />
+  </process>
+  <bpmndi:BPMNDiagram id="P2_Diagram">
+    <bpmndi:BPMNPlane id="P2_Diagram_plane" bpmnElement="Collab_P2">
+      <bpmndi:BPMNShape id="Shape_Part_PestPro_P2" bpmnElement="Part_PestPro_P2" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2850" height="500" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P2_Techniker" bpmnElement="Lane_P2_Techniker" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2820" height="290" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_P2_QV" bpmnElement="Lane_P2_QV" isHorizontal="true">
+        <dc:Bounds x="190" y="370" width="2820" height="210" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_Start" bpmnElement="P2_Start">
+        <dc:Bounds x="240" y="207" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="226" y="250" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T1" bpmnElement="P2_T1">
+        <dc:Bounds x="325" y="185" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T2" bpmnElement="P2_T2">
+        <dc:Bounds x="500" y="185" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T3" bpmnElement="P2_T3">
+        <dc:Bounds x="675" y="185" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_End" bpmnElement="P2_End">
+        <dc:Bounds x="2942" y="457" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2923" y="500" width="74" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_Einsatz" bpmnElement="P2_SP_Einsatz" isExpanded="true">
+        <dc:Bounds x="850" y="120" width="1030" height="230" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_Start" bpmnElement="P2_SP_Start">
+        <dc:Bounds x="882" y="207" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="862" y="250" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_T1" bpmnElement="P2_SP_T1">
+        <dc:Bounds x="960" y="185" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_T2" bpmnElement="P2_SP_T2">
+        <dc:Bounds x="1120" y="185" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_T3" bpmnElement="P2_SP_T3">
+        <dc:Bounds x="1280" y="185" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_T4" bpmnElement="P2_SP_T4">
+        <dc:Bounds x="1440" y="185" width="110" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_ThrowMSG" bpmnElement="P2_SP_ThrowMSG">
+        <dc:Bounds x="1592" y="207" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1575" y="160" width="71" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_CatchMSG" bpmnElement="P2_SP_CatchMSG">
+        <dc:Bounds x="1652" y="185" width="120" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_SP_End" bpmnElement="P2_SP_End">
+        <dc:Bounds x="1815" y="207" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1796" y="250" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf1" bpmnElement="P2_SP_sf1">
+        <di:waypoint x="918" y="225" />
+        <di:waypoint x="960" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf2" bpmnElement="P2_SP_sf2">
+        <di:waypoint x="1070" y="225" />
+        <di:waypoint x="1120" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf3" bpmnElement="P2_SP_sf3">
+        <di:waypoint x="1230" y="225" />
+        <di:waypoint x="1280" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf4" bpmnElement="P2_SP_sf4">
+        <di:waypoint x="1390" y="225" />
+        <di:waypoint x="1440" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf5" bpmnElement="P2_SP_sf5">
+        <di:waypoint x="1550" y="225" />
+        <di:waypoint x="1592" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf6" bpmnElement="P2_SP_sf6">
+        <di:waypoint x="1628" y="225" />
+        <di:waypoint x="1652" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_SP_sf7" bpmnElement="P2_SP_sf7">
+        <di:waypoint x="1772" y="225" />
+        <di:waypoint x="1815" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_P2_GW_Join" bpmnElement="P2_GW_Join" isMarkerVisible="true">
+        <dc:Bounds x="1950" y="450" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1944" y="509.5" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T4" bpmnElement="P2_T4">
+        <dc:Bounds x="2060" y="435" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T5" bpmnElement="P2_T5">
+        <dc:Bounds x="2240" y="435" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_GW_QS" bpmnElement="P2_GW_QS" isMarkerVisible="true">
+        <dc:Bounds x="2420" y="450" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2413" y="509.5" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T6" bpmnElement="P2_T6">
+        <dc:Bounds x="2380" y="185" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T7" bpmnElement="P2_T7">
+        <dc:Bounds x="2540" y="435" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_P2_T8" bpmnElement="P2_T8">
+        <dc:Bounds x="2720" y="435" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_P2_sf1" bpmnElement="P2_sf1">
+        <di:waypoint x="276" y="225" />
+        <di:waypoint x="325" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf2" bpmnElement="P2_sf2">
+        <di:waypoint x="445" y="225" />
+        <di:waypoint x="500" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf3" bpmnElement="P2_sf3">
+        <di:waypoint x="620" y="225" />
+        <di:waypoint x="675" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf4" bpmnElement="P2_sf4">
+        <di:waypoint x="795" y="225" />
+        <di:waypoint x="850" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf10" bpmnElement="P2_sf10">
+        <di:waypoint x="2840" y="475" />
+        <di:waypoint x="2942" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf5" bpmnElement="P2_sf5">
+        <di:waypoint x="1830" y="350" />
+        <di:waypoint x="1830" y="475" />
+        <di:waypoint x="1950" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf_loop" bpmnElement="P2_sf_loop">
+        <di:waypoint x="2440" y="185" />
+        <di:waypoint x="2440" y="130" />
+        <di:waypoint x="1975" y="130" />
+        <di:waypoint x="1975" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2152" y="112" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf6" bpmnElement="P2_sf6">
+        <di:waypoint x="2000" y="475" />
+        <di:waypoint x="2060" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf7" bpmnElement="P2_sf7">
+        <di:waypoint x="2180" y="475" />
+        <di:waypoint x="2240" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf8" bpmnElement="P2_sf8">
+        <di:waypoint x="2360" y="475" />
+        <di:waypoint x="2420" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf_ja" bpmnElement="P2_sf_ja">
+        <di:waypoint x="2470" y="475" />
+        <di:waypoint x="2540" y="475" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2459" y="453" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf_nein" bpmnElement="P2_sf_nein">
+        <di:waypoint x="2445" y="450" />
+        <di:waypoint x="2445" y="265" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2455" y="350" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_P2_sf9" bpmnElement="P2_sf9">
+        <di:waypoint x="2660" y="475" />
+        <di:waypoint x="2720" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Part_Kunde_P2" bpmnElement="Part_Kunde_P2" isHorizontal="true">
+        <dc:Bounds x="160" y="610" width="2850" height="120" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_MF_P2_BerichtZumUnterzeichnen" bpmnElement="MF_P2_BerichtZumUnterzeichnen">
+        <di:waypoint x="1610" y="243" />
+        <di:waypoint x="1610" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1534" y="526" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_P2_BerichtAnKunden" bpmnElement="MF_P2_BerichtAnKunden">
+        <di:waypoint x="2600" y="515" />
+        <di:waypoint x="2600" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2613" y="546" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,6 @@
+{
+  "Name": "AngebotsEmail",
+  "ProjectType": "Process",
+  "Description": "Leerer Prozess",
+  "MainFile": "Main.xaml"
+}

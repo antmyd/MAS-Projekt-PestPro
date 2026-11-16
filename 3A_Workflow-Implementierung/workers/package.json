@@ -1,0 +1,16 @@
+{
+  "name": "pestpro-external-workers",
+  "version": "1.0.0",
+  "description": "Camunda External Task Worker – PestPro GmbH Aufgabe 3A",
+  "main": "start-all-workers.js",
+  "scripts": {
+    "start": "node start-all-workers.js",
+    "worker:qs": "node worker-qs-ticket.js",
+    "worker:rechnung": "node worker-rechnung.js",
+    "worker:stelle": "node worker-stelle.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.4.5"
+  }
+}

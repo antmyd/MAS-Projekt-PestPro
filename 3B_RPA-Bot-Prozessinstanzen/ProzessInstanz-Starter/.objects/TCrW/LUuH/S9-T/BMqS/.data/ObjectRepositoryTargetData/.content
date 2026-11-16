@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ObjectRepositoryTargetData ContentHash="p7ypA6meqkiyVGaFGv4ZQA" Reference="FZ-gsJOMwU-CwQ0auh4K5w/BMqSPndhOkavtM5-dcghmg" xmlns="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ObjectRepositoryTargetData.Data>
+    <TargetAnchorable x:Key="TargetAnchorable" BrowserURL="localhost/camunda-welcome/index.html" DesignTimeRectangle="441, 410, 484, 276" ElementType="Icon" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl tag='IMG' /&gt;" Guid="1197d98d-e8c6-40c7-b0d8-0f9ab91dbd94" ScopeSelectorArgument="&lt;html app='chrome.exe' title='Welcome to the Camunda Platform' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive">
+      <TargetAnchorable.PointOffset>
+        <PointOffset Position="TopRight" X="-114" Y="45" />
+      </TargetAnchorable.PointOffset>
+      <imageRef attrName="InformativeScreenshot" originalValue="5c15d4d2bce4d1ab7f06a4bbc92d0030.jpg" xmlns="">0Bv3aLYp020m6OyZvWfiKuQ</imageRef>
+    </TargetAnchorable>
+    <x:String x:Key="ActivityType">TypeInto</x:String>
+  </ObjectRepositoryTargetData.Data>
+</ObjectRepositoryTargetData>
